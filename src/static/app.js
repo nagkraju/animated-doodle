@@ -552,14 +552,13 @@ document.addEventListener("DOMContentLoaded", () => {
       </div>
     `;
 
-    // Create social share buttons (escape name for HTML safety)
-    const escapedName = escapeHtml(name);
+    // Create social share buttons (escape name for HTML safety in data attributes if needed)
     const socialShareHtml = `
       <div class="social-share-container">
         <span class="social-share-label">Share:</span>
         <div class="social-share-buttons">
           <button class="share-button twitter" data-platform="twitter" title="Share on Twitter" aria-label="Share on Twitter">
-            𝕏
+            X
           </button>
           <button class="share-button facebook" data-platform="facebook" title="Share on Facebook" aria-label="Share on Facebook">
             f
