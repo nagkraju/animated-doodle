@@ -472,10 +472,20 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
+  // Function to escape HTML to prevent XSS
+  function escapeHtml(text) {
+    const div = document.createElement('div');
+    div.textContent = text;
+    return div.innerHTML;
+  }
+
   // Function to share activity on social media
   function shareActivity(platform, activityName, activityDescription, activitySchedule) {
     const baseUrl = window.location.origin + window.location.pathname;
-    const text = `Check out this activity at Mergington High School: ${activityName} - ${activityDescription}`;
+    // Sanitize text content before using
+    const sanitizedName = escapeHtml(activityName);
+    const sanitizedDescription = escapeHtml(activityDescription);
+    const text = `Check out this activity at Mergington High School: ${sanitizedName} - ${sanitizedDescription}`;
     const encodedText = encodeURIComponent(text);
     const encodedUrl = encodeURIComponent(baseUrl);
     
@@ -546,17 +556,18 @@ document.addEventListener("DOMContentLoaded", () => {
     `;
 
     // Create social share buttons
+    const escapedName = escapeHtml(name);
     const socialShareHtml = `
       <div class="social-share-container">
         <span class="social-share-label">Share:</span>
         <div class="social-share-buttons">
-          <button class="share-button twitter" data-platform="twitter" data-activity="${name}" title="Share on Twitter">
+          <button class="share-button twitter" data-platform="twitter" data-activity="${escapedName}" title="Share on Twitter" aria-label="Share on Twitter">
             𝕏
           </button>
-          <button class="share-button facebook" data-platform="facebook" data-activity="${name}" title="Share on Facebook">
+          <button class="share-button facebook" data-platform="facebook" data-activity="${escapedName}" title="Share on Facebook" aria-label="Share on Facebook">
             f
           </button>
-          <button class="share-button linkedin" data-platform="linkedin" data-activity="${name}" title="Share on LinkedIn">
+          <button class="share-button linkedin" data-platform="linkedin" data-activity="${escapedName}" title="Share on LinkedIn" aria-label="Share on LinkedIn">
             in
           </button>
         </div>
