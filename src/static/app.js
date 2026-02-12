@@ -531,6 +531,39 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
+  // Function to escape HTML to prevent XSS
+  function escapeHtml(text) {
+    const div = document.createElement('div');
+    div.textContent = text;
+    return div.innerHTML;
+  }
+
+  // Function to share activity on social media
+  function shareActivity(platform, activityName, activityDescription, activitySchedule) {
+    const baseUrl = window.location.origin + window.location.pathname;
+    const text = `Check out this activity at Mergington High School: ${activityName} - ${activityDescription}`;
+    const encodedText = encodeURIComponent(text);
+    const encodedUrl = encodeURIComponent(baseUrl);
+    
+    let shareUrl = '';
+    
+    switch(platform) {
+      case 'twitter':
+        shareUrl = `https://twitter.com/intent/tweet?text=${encodedText}&url=${encodedUrl}`;
+        break;
+      case 'facebook':
+        shareUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodedUrl}&quote=${encodedText}`;
+        break;
+      case 'linkedin':
+        shareUrl = `https://www.linkedin.com/sharing/share-offsite/?url=${encodedUrl}`;
+        break;
+    }
+    
+    if (shareUrl) {
+      window.open(shareUrl, '_blank', 'width=600,height=400');
+    }
+  }
+
   // Function to render a single activity card
   function renderActivityCard(name, details) {
     const activityCard = document.createElement("div");
@@ -578,6 +611,24 @@ document.addEventListener("DOMContentLoaded", () => {
       </div>
     `;
 
+    // Create social share buttons (escape name for HTML safety in data attributes if needed)
+    const socialShareHtml = `
+      <div class="social-share-container">
+        <span class="social-share-label">Share:</span>
+        <div class="social-share-buttons">
+          <button class="share-button twitter" data-platform="twitter" title="Share on Twitter" aria-label="Share on Twitter">
+            X
+          </button>
+          <button class="share-button facebook" data-platform="facebook" title="Share on Facebook" aria-label="Share on Facebook">
+            f
+          </button>
+          <button class="share-button linkedin" data-platform="linkedin" title="Share on LinkedIn" aria-label="Share on LinkedIn">
+            in
+          </button>
+        </div>
+      </div>
+    `;
+
     activityCard.innerHTML = `
       ${tagHtml}
       <h4>${name}</h4>
@@ -587,6 +638,7 @@ document.addEventListener("DOMContentLoaded", () => {
         <span class="tooltip-text">Regular meetings at this time throughout the semester</span>
       </p>
       ${capacityIndicator}
+      ${socialShareHtml}
       <div class="participants-list">
         <h5>Current Participants:</h5>
         <ul>
@@ -645,6 +697,17 @@ document.addEventListener("DOMContentLoaded", () => {
         });
       }
     }
+
+    // Add click handlers for social share buttons (use closure to access name and details)
+    const shareButtons = activityCard.querySelectorAll(".share-button");
+    shareButtons.forEach((button) => {
+      button.addEventListener("click", (e) => {
+        e.preventDefault();
+        const platform = button.dataset.platform;
+        // Use the original name and details from closure, not from data attributes
+        shareActivity(platform, name, details.description, formattedSchedule);
+      });
+    });
 
     activitiesList.appendChild(activityCard);
   }
