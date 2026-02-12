@@ -482,10 +482,7 @@ document.addEventListener("DOMContentLoaded", () => {
   // Function to share activity on social media
   function shareActivity(platform, activityName, activityDescription, activitySchedule) {
     const baseUrl = window.location.origin + window.location.pathname;
-    // Sanitize text content before using
-    const sanitizedName = escapeHtml(activityName);
-    const sanitizedDescription = escapeHtml(activityDescription);
-    const text = `Check out this activity at Mergington High School: ${sanitizedName} - ${sanitizedDescription}`;
+    const text = `Check out this activity at Mergington High School: ${activityName} - ${activityDescription}`;
     const encodedText = encodeURIComponent(text);
     const encodedUrl = encodeURIComponent(baseUrl);
     
@@ -555,19 +552,19 @@ document.addEventListener("DOMContentLoaded", () => {
       </div>
     `;
 
-    // Create social share buttons
+    // Create social share buttons (escape name for HTML safety)
     const escapedName = escapeHtml(name);
     const socialShareHtml = `
       <div class="social-share-container">
         <span class="social-share-label">Share:</span>
         <div class="social-share-buttons">
-          <button class="share-button twitter" data-platform="twitter" data-activity="${escapedName}" title="Share on Twitter" aria-label="Share on Twitter">
+          <button class="share-button twitter" data-platform="twitter" title="Share on Twitter" aria-label="Share on Twitter">
             𝕏
           </button>
-          <button class="share-button facebook" data-platform="facebook" data-activity="${escapedName}" title="Share on Facebook" aria-label="Share on Facebook">
+          <button class="share-button facebook" data-platform="facebook" title="Share on Facebook" aria-label="Share on Facebook">
             f
           </button>
-          <button class="share-button linkedin" data-platform="linkedin" data-activity="${escapedName}" title="Share on LinkedIn" aria-label="Share on LinkedIn">
+          <button class="share-button linkedin" data-platform="linkedin" title="Share on LinkedIn" aria-label="Share on LinkedIn">
             in
           </button>
         </div>
@@ -643,14 +640,14 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     }
 
-    // Add click handlers for social share buttons
+    // Add click handlers for social share buttons (use closure to access name and details)
     const shareButtons = activityCard.querySelectorAll(".share-button");
     shareButtons.forEach((button) => {
       button.addEventListener("click", (e) => {
         e.preventDefault();
         const platform = button.dataset.platform;
-        const activityName = button.dataset.activity;
-        shareActivity(platform, activityName, details.description, formattedSchedule);
+        // Use the original name and details from closure, not from data attributes
+        shareActivity(platform, name, details.description, formattedSchedule);
       });
     });
 
